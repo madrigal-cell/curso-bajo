@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Mi Curso de Bajo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: un mástil de bajo como hilo conductor — cabecera con progreso, pestañas Hoy · Plan · Mástil · Metrónomo · Temas */
+:root{
+  --bg:#EEF0EC; --surface:#FFFFFF; --sunk:#E3E7E1; --ink:#16191C; --muted:#56605B; --line:#D2D8D0;
+  --accent:#8A5A00; --accent-fill:#E8A317; --on-accent:#1A1200; --steel:#1D6670; --steel-soft:#D7EAEC;
+  --ok:#2E7D4F; --wood:#3B2A20; --wood-ink:#F3E6D6; --fret:#B9B2A6;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111416; --surface:#1A1E21; --sunk:#14181A; --ink:#E6EBE7; --muted:#9AA59F; --line:#2B3236;
+  --accent:#F2B13A; --accent-fill:#E8A317; --on-accent:#1A1200; --steel:#6CC0C9; --steel-soft:#173539;
+  --ok:#5BC189; --wood:#2A1D16; --wood-ink:#F3E6D6; --fret:#6F6A62; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111416; --surface:#1A1E21; --sunk:#14181A; --ink:#E6EBE7; --muted:#9AA59F; --line:#2B3236;
+  --accent:#F2B13A; --accent-fill:#E8A317; --on-accent:#1A1200; --steel:#6CC0C9; --steel-soft:#173539;
+  --ok:#5BC189; --wood:#2A1D16; --wood-ink:#F3E6D6; --fret:#6F6A62; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+
+/* Cabecera */
+header.hero{display:grid;gap:14px;padding-block:8px 18px}
+.strings{display:grid;gap:5px;margin-top:4px}
+.strings span{display:block;height:2px;background:var(--line);border-radius:2px;position:relative;overflow:hidden}
+.strings span i{position:absolute;inset:0 auto 0 0;background:var(--accent-fill);width:0;transition:width .6s ease}
+.strings span:nth-child(1){height:1.5px}.strings span:nth-child(2){height:2px}.strings span:nth-child(3){height:2.5px}.strings span:nth-child(4){height:3.5px}
+.progress-row{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;font-variant-numeric:tabular-nums}
+.progress-row b{font-family:var(--f-display);font-size:1.4rem}
+
+/* Pestañas */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding-block:8px;border-bottom:1px solid var(--line);margin-bottom:22px;scrollbar-width:none}
+nav.tabs button{background:none;border:0;padding:8px 14px;border-radius:999px;color:var(--muted);font-weight:700;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+section.view{display:grid;gap:22px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:12px;min-width:0}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--steel-soft);color:var(--steel);white-space:nowrap}
+.chip.bpm{background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--f-mono);font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-weight:700}
+.btn.primary{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
+.btn.small{padding:4px 10px;font-size:.85rem}
+
+/* Sesión */
+.session{display:grid;gap:8px}
+.block{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start;padding:12px;border-radius:8px;background:var(--sunk);border:1px solid transparent}
+.block.active{border-color:var(--accent-fill);background:var(--surface)}
+.block.done{opacity:.6}
+.block .min{font-family:var(--f-mono);font-weight:600;font-size:1.05rem;text-align:center;padding-top:2px;font-variant-numeric:tabular-nums}
+.block .body{min-width:0;display:grid;gap:6px}
+.timer{font-family:var(--f-mono);font-size:2rem;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Tablatura */
+pre.tab{font-family:var(--f-mono);font-size:.85rem;line-height:1.35;background:var(--sunk);border-radius:6px;padding:10px 12px;margin:0;overflow-x:auto;color:var(--ink)}
+pre.tab .tn{color:var(--accent);font-weight:600}
+pre.tab .ann{color:var(--steel)}
+ul.ex{margin:0;padding-left:1.1em;display:grid;gap:8px}
+ul.ex li{min-width:0}
+
+/* Plan */
+.phase{display:grid;gap:10px}
+.phase-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+.weeks{display:grid;gap:6px}
+details.week{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+details.week[open]{border-color:var(--steel)}
+details.week summary{list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 14px;cursor:pointer}
+details.week summary::-webkit-details-marker{display:none}
+.wnum{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);width:2.6em;font-variant-numeric:tabular-nums}
+.wtitle{font-weight:700;min-width:0}
+.wstate{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.75rem;color:transparent}
+details.week.is-done .wstate{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+details.week.is-current .wstate{border-color:var(--accent-fill)}
+details.week.is-current .wnum{color:var(--accent);font-weight:600}
+.wbody{padding:0 14px 16px;display:grid;gap:12px}
+.wgrid{display:grid;grid-template-columns:110px 1fr;gap:8px 14px}
+.wgrid > *{min-width:0}
+.wgrid dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;padding-top:3px}
+.wgrid dd{margin:0}
+@media (max-width:560px){.wgrid{grid-template-columns:1fr}.wgrid dt{padding-top:6px}}
+label.check{display:inline-flex;gap:8px;align-items:center;font-weight:700}
+label.check input{width:20px;height:20px;accent-color:var(--ok)}
+input.num{width:5.5em;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-family:var(--f-mono)}
+
+/* Mástil */
+.fb-wrap{overflow-x:auto;border-radius:8px}
+.fb{display:grid;grid-template-columns:34px repeat(13,minmax(42px,1fr));min-width:600px;background:var(--wood);border-radius:8px;padding:8px 8px 4px}
+.fb .lab{color:var(--wood-ink);font-family:var(--f-mono);font-size:.8rem;display:grid;place-items:center;opacity:.8}
+.fb .cell{position:relative;height:38px;display:grid;place-items:center;border-left:2px solid var(--fret)}
+.fb .cell.nut{border-left:none;border-right:4px solid var(--wood-ink)}
+.fb .cell::before{content:"";position:absolute;left:0;right:0;top:50%;height:var(--sw,2px);background:#C8C2B6;transform:translateY(-50%)}
+.fb .note{position:relative;z-index:1;min-width:28px;height:26px;padding:0 4px;border-radius:13px;display:grid;place-items:center;font-family:var(--f-mono);font-size:.74rem;font-weight:600;background:var(--wood);color:var(--wood-ink);border:1px solid #6b5a4c}
+.fb .note.in{background:var(--steel);color:#fff;border-color:var(--steel)}
+.fb .note.root{background:var(--accent-fill);color:var(--on-accent);border-color:var(--accent-fill)}
+.fb .note.off{opacity:.0}
+.fb .fn{color:var(--wood-ink);font-family:var(--f-mono);font-size:.7rem;text-align:center;opacity:.7;padding-top:4px}
+.fb .fn.dot::after{content:" •"}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end}
+.field{display:grid;gap:4px;font-size:.85rem;font-weight:700;color:var(--muted)}
+.field select{padding:7px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:400}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--muted)}
+
+/* Metrónomo */
+.metro{display:grid;gap:16px;justify-items:center;text-align:center}
+.bpm-big{font-family:var(--f-display);font-size:clamp(3.5rem,14vw,5.5rem);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.beats{display:flex;gap:10px}
+.beats span{width:22px;height:22px;border-radius:50%;background:var(--sunk);border:2px solid var(--line);transition:background .05s}
+.beats span.on{background:var(--steel);border-color:var(--steel)}
+.beats span.on.acc{background:var(--accent-fill);border-color:var(--accent-fill)}
+input[type=range]{width:min(420px,100%);accent-color:var(--accent-fill)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:var(--surface);border:0;padding:7px 12px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* Repertorio */
+.rep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.rep-grid ol{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lvl{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.note-box{border-left:3px solid var(--steel);padding:4px 0 4px 12px;color:var(--muted)}
+footer{margin-top:40px;font-size:.85rem;color:var(--muted)}
+footer a{color:var(--steel)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Programa autodidacta · 48 semanas · 25 min al día</p>
+    <h1>Mi Curso de Bajo</h1>
+    <p class="muted" style="max-width:62ch">Desde cero hasta funk, slap, soul, walking, blues y tumbao. Seis fases de ocho semanas. Cada día, la misma sesión de 25 minutos con el contenido de la semana en la que estés.</p>
+    <div class="strings" aria-hidden="true"><span><i id="s1"></i></span><span><i id="s2"></i></span><span><i id="s3"></i></span><span><i id="s4"></i></span></div>
+    <div class="progress-row"><span><b id="pDone">0</b> / 48 semanas</span><span class="muted" id="pPhase"></span></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-view="hoy" aria-selected="true" id="tab-hoy">Hoy</button>
+    <button role="tab" data-view="plan" aria-selected="false" id="tab-plan">Plan</button>
+    <button role="tab" data-view="mastil" aria-selected="false" id="tab-mastil">Mástil</button>
+    <button role="tab" data-view="metro" aria-selected="false" id="tab-metro">Metrónomo</button>
+    <button role="tab" data-view="temas" aria-selected="false" id="tab-temas">Temas</button>
+  </nav>
+
+  <!-- HOY -->
+  <section class="view" id="view-hoy">
+    <div class="card" id="todayCard"></div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><p class="eyebrow">Sesión de hoy</p><h2>25 minutos</h2></div>
+        <div class="row"><span class="timer" id="sTimer">25:00</span>
+          <button class="btn primary" id="sStart">Empezar</button>
+          <button class="btn" id="sReset">Reiniciar</button></div>
+      </div>
+      <div class="session" id="session"></div>
+      <p class="muted" style="font-size:.9rem">Suena un aviso al cambiar de bloque. Los ejercicios se tocan siempre con metrónomo: empieza al BPM de inicio y sube de 4 en 4 cuando salga limpio tres veces seguidas.</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Reglas del curso</p>
+      <ul class="ex">
+        <li><b>Lento y limpio antes que rápido.</b> Si fallas, baja 8 BPM.</li>
+        <li><b>No pases de semana sin cumplir el objetivo.</b> Repetir una semana es parte del plan.</li>
+        <li><b>Grábate cada 8 semanas</b> (semanas 8, 16, 24, 32, 40 y 48) y compara.</li>
+        <li><b>Toca con base de batería</b> desde la semana 4: los ritmos y el looper del multiefectos sirven.</li>
+        <li><b>Día libre a la semana.</b> Ese día escucha con atención las líneas de bajo de los temas de la fase.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="view" id="view-plan" hidden></section>
+
+  <!-- MÁSTIL -->
+  <section class="view" id="view-mastil" hidden>
+    <div class="card">
+      <div><p class="eyebrow">Referencia</p><h2>El mástil, trastes 0–12</h2></div>
+      <div class="controls">
+        <label class="field" for="fbRoot">Tónica<select id="fbRoot"></select></label>
+        <label class="field" for="fbScale">Escala o arpegio<select id="fbScale"></select></label>
+        <label class="field" for="fbLabel">Mostrar<select id="fbLabel"><option value="note">Notas</option><option value="deg">Grados</option></select></label>
+      </div>
+      <div class="fb-wrap"><div class="fb" id="fb"></div></div>
+      <div class="legend"><span><b style="color:var(--accent)">●</b> Tónica</span><span><b style="color:var(--steel)">●</b> Nota de la escala</span><span>C=Do · D=Re · E=Mi · F=Fa · G=Sol · A=La · B=Si</span></div>
+      <p class="note-box">Afinación estándar de arriba abajo como en la tablatura: G (Sol), D (Re), A (La), E (Mi). El traste 12 repite las notas al aire una octava más aguda.</p>
+    </div>
+  </section>
+
+  <!-- METRÓNOMO -->
+  <section class="view" id="view-metro" hidden>
+    <div class="card metro">
+      <p class="eyebrow">Metrónomo</p>
+      <div class="bpm-big" id="mBpm">70</div>
+      <div class="beats" id="mBeats"><span></span><span></span><span></span><span></span></div>
+      <label for="mRange" class="muted" style="font-size:.85rem">Tempo (BPM)</label>
+      <input type="range" id="mRange" min="40" max="200" value="70">
+      <div class="row" style="justify-content:center">
+        <button class="btn small" data-d="-5">−5</button><button class="btn small" data-d="-1">−1</button>
+        <button class="btn primary" id="mToggle" style="min-width:110px">Iniciar</button>
+        <button class="btn small" data-d="1">+1</button><button class="btn small" data-d="5">+5</button>
+      </div>
+      <div class="seg" role="group" aria-label="Subdivisión" id="mSub">
+        <button data-s="1" aria-pressed="true">Negras</button><button data-s="2" aria-pressed="false">Corcheas</button><button data-s="3" aria-pressed="false">Tresillos</button><button data-s="4" aria-pressed="false">Semicorcheas</button><button data-s="sw" aria-pressed="false">Swing</button>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="mTap">Marcar tempo (tap)</button>
+        <label class="check" for="mAcc"><input type="checkbox" id="mAcc" checked> Acento en el 1</label>
+        <label class="check" for="m24"><input type="checkbox" id="m24"> Solo 2 y 4</label>
+      </div>
+      <p class="muted" style="font-size:.9rem;max-width:52ch">"Solo 2 y 4" deja sonar el clic únicamente en los tiempos débiles, como la caja de una batería. Úsalo desde la fase 3 para afianzar el pulso interno.</p>
+    </div>
+  </section>
+
+  <!-- TEMAS -->
+  <section class="view" id="view-temas" hidden>
+    <div><p class="eyebrow">Repertorio</p><h2>Temas para sacar, por estilo</h2><p class="muted" style="margin-top:6px">Ordenados de más fácil a más difícil. Empieza con el audio ralentizado al 70 % y busca la tablatura solo para comprobar lo que has sacado de oído.</p></div>
+    <div class="rep-grid" id="rep"></div>
+  </section>
+
+  <footer>Estructura inspirada en el catálogo del <a href="https://debajoelectrico.com/programa-autodidacta/" target="_blank" rel="noopener">programa autodidacta de Debajo Eléctrico</a>. Tu progreso se guarda solo en este navegador.</footer>
+</div>
+
+<script>
+(function(){
+/* ---------- Tablatura ---------- */
+function tab(src){
+  var S=["G","D","A","E"], cols=[], hasAnn=false;
+  src.trim().split(/\s+/).forEach(function(tok){
+    if(tok==="|"){cols.push({bar:true});return}
+    if(tok==="."){cols.push({rest:true});return}
+    var m=tok.split(":"), st=m[0], rest=m[1].split("/");
+    if(rest[1])hasAnn=true;
+    cols.push({s:st,f:rest[0],a:rest[1]||""});
+  });
+  var lines=S.map(function(s){return s+"|"}), ann="  ";
+  cols.forEach(function(c){
+    if(c.bar){lines=lines.map(function(l){return l+"|"});ann+=" ";return}
+    var w=c.rest?2:Math.max(c.f.length,c.a.length)+1;
+    S.forEach(function(s,i){
+      if(!c.rest&&c.s===s){lines[i]+='<span class="tn">'+c.f+'</span>'+"-".repeat(w-c.f.length)}
+      else lines[i]+="-".repeat(w);
+    });
+    ann+=c.rest?"  ":(c.a+" ".repeat(w-c.a.length));
+  });
+  lines=lines.map(function(l){return l+"-|"});
+  return '<pre class="tab">'+lines.join("\n")+(hasAnn?'\n<span class="ann">'+ann+'</span>':"")+'</pre>';
+}
+
+/* ---------- Contenido ---------- */
+var PHASES=[
+ {n:"Fundamentos",d:"Postura, las dos manos, ritmo básico y las notas del mástil."},
+ {n:"Lectura, teoría y blues",d:"Intervalos, escala mayor, arpegios, clave de fa y el blues de 12 compases."},
+ {n:"Rock, blues y semicorcheas",d:"Pentatónicas, escala de blues, semicorcheas, ghost notes y tocar en el pocket."},
+ {n:"Funk y slap",d:"Funk con dedos, mixolidio y slap desde cero: pulgar, pop, ligados y notas muertas."},
+ {n:"Soul, armonía y walking",d:"Acordes de séptima, II‑V‑I, lectura 2, líneas Motown, walking bass y modos."},
+ {n:"Latino y proyecto final",d:"Clave, tumbao, bossa, solos sencillos, transcripción y tu grabación final."}
+];
+var W=[
+/* FASE 1 */
+{t:"Postura, afinación y mano derecha",g:"Tocar negras en cada cuerda al aire alternando índice y medio, sin mirar la mano.",bpm:[60,70],
+ tec:[{x:"Afina con el afinador del multiefectos: E‑A‑D‑G de grave a agudo."},{x:"Negras en cada cuerda al aire, alternando índice‑medio (i‑m). Cuatro por cuerda.",tab:"E:0/i E:0/m E:0/i E:0/m | A:0/i A:0/m A:0/i A:0/m | D:0/i D:0/m D:0/i D:0/m | G:0/i G:0/m G:0/i G:0/m"}],
+ teo:"Partes del bajo y cómo se lee una tablatura: 4 líneas = 4 cuerdas, el número es el traste.",gr:"Toca negras sobre la cuerda A mientras suena cualquier canción a tempo lento."},
+{t:"Mano izquierda: un dedo por traste",g:"Ejercicio cromático completo, limpio y sin trastes 'zumbando'.",bpm:[60,72],
+ tec:[{x:"Cromático 1‑2‑3‑4 en todas las cuerdas. Dedo índice en traste 1, meñique en traste 4. El dedo va justo detrás del traste.",tab:"E:1 E:2 E:3 E:4 A:1 A:2 A:3 A:4 D:1 D:2 D:3 D:4 G:1 G:2 G:3 G:4"},{x:"Lo mismo bajando (G a E, 4‑3‑2‑1)."}],
+ teo:"El semitono (un traste) y el tono (dos trastes).",gr:"Toca el cromático en corcheas cuando salga limpio en negras."},
+{t:"Apagado y notas de la cuerda E",g:"Que no suenen cuerdas que no estás tocando.",bpm:[65,76],
+ tec:[{x:"Ancla móvil: el pulgar derecho descansa en la cuerda E cuando tocas A, D o G. La mano izquierda apaga levantando el dedo sin soltarlo del todo."},{x:"Notas naturales en la cuerda E: E F G A B C D E.",tab:"E:0 E:1 E:3 E:5 E:7 E:8 E:10 E:12"}],
+ teo:"Las 7 notas naturales y el cifrado americano (C=Do, D=Re…). Entre E‑F y B‑C hay solo un semitono.",gr:"Toca una nota, apágala, silencio de negra. Repite. El silencio también se toca."},
+{t:"Corcheas y primera línea I‑IV‑V",g:"Tocar corcheas parejas contando en voz alta '1 y 2 y 3 y 4 y'.",bpm:[65,80],
+ tec:[{x:"Corcheas sobre raíz siguiendo A‑D‑E (un compás cada acorde).",tab:"A:0 A:0 A:0 A:0 A:0 A:0 A:0 A:0 | D:0 D:0 D:0 D:0 D:0 D:0 D:0 D:0 | E:0 E:0 E:0 E:0 E:0 E:0 E:0 E:0"}],
+ teo:"Negra, corchea y cómo se cuentan. Qué es un compás de 4/4.",gr:"Seven Nation Army (riff). Desde esta semana, toca con base de batería."},
+{t:"Notas en D y G, y octavas",g:"Encontrar cualquier nota en el mástil en menos de 3 segundos.",bpm:[70,84],
+ tec:[{x:"Forma de octava: dos cuerdas más arriba, dos trastes más adelante. G en la cuerda E y su octava; C en la cuerda A y su octava.",tab:"E:3 D:5 E:3 D:5 | A:3 G:5 A:3 G:5"},{x:"Juego: elige una nota (por ejemplo C) y encuéntrala en las 4 cuerdas."}],
+ teo:"La octava. Mira la pestaña Mástil con todas las notas a la vista.",gr:"Línea de octavas en corcheas sobre A‑D‑E."},
+{t:"Raíz‑quinta‑octava",g:"Tocar la forma raíz‑5‑8 sobre cualquier nota sin pensar.",bpm:[70,88],
+ tec:[{x:"Raíz‑quinta‑octava‑quinta sobre A y sobre D.",tab:"E:5 A:7 D:7 A:7 | A:5 D:7 G:7 D:7"}],
+ teo:"La quinta justa: una cuerda arriba, dos trastes adelante. Es la nota más segura después de la raíz.",gr:"Patrón raíz‑quinta estilo country/rock sobre A‑D‑E."},
+{t:"Duración y silencios",g:"Diferenciar notas largas (legato) y cortas (staccato) a voluntad.",bpm:[72,90],
+ tec:[{x:"Un compás de negras largas y otro de negras cortadas a la mitad, sobre la misma nota."},{x:"Corcheas con silencio en los tiempos 2 y 4."}],
+ teo:"Silencios de negra y corchea. Por qué el bajo 'respira'.",gr:"Stand By Me (Ben E. King): el riff completo, primero a 80 BPM."},
+{t:"Repaso y primera grabación",g:"Grabar con el móvil dos líneas completas con base de batería.",bpm:[75,95],
+ tec:[{x:"Cromático + notas en el mástil + raíz‑quinta a tu mejor BPM limpio."}],
+ teo:"Escucha la grabación: ¿suenan todas las notas igual de fuertes? ¿Entras a tiempo?",gr:"Another One Bites the Dust (Queen), a 85 BPM. Original: ~110."},
+/* FASE 2 */
+{t:"Intervalos en el mástil",g:"Reconocer la forma de 2ª, 3ª mayor y menor, 4ª, 5ª y 8ª desde cualquier raíz.",bpm:[70,90],
+ tec:[{x:"Desde C (A:3): toca cada intervalo y vuelve a la raíz.",tab:"A:3 A:5 | A:3 D:2 | A:3 D:1 | A:3 D:3 | A:3 D:5 | A:3 G:5"}],
+ teo:"Nombres de los intervalos y cuántos semitonos tiene cada uno (2M=2, 3m=3, 3M=4, 4J=5, 5J=7, 8=12).",gr:"Raíz‑3ª‑5ª sobre C y F con base lenta."},
+{t:"La escala mayor",g:"Escala mayor de una octava desde cualquier nota de las cuerdas E y A.",bpm:[70,92],
+ tec:[{x:"C mayor desde la cuerda A (dedos 2‑4‑1‑2‑4‑1‑3‑4).",tab:"A:3 A:5 D:2 D:3 D:5 G:2 G:4 G:5"},{x:"La misma forma desde G (E:3) y desde A (E:5)."}],
+ teo:"Fórmula T‑T‑S‑T‑T‑T‑S. Grados 1 a 7.",gr:"Escala mayor en corcheas, subiendo y bajando."},
+{t:"Lectura rítmica 1",g:"Leer y tocar a primera vista ritmos de redondas a corcheas con silencios.",bpm:[60,80],
+ tec:[{x:"Palmea un ritmo escrito, después tócalo sobre una sola nota."},{x:"Clave de fa: espacios A‑C‑E‑G, líneas G‑B‑D‑F‑A (de abajo arriba)."}],
+ teo:"Redonda (4), blanca (2), negra (1), corchea (½) y sus silencios. El bajo suena una octava más grave de lo escrito.",gr:"Toca 4 compases de ritmo leído sobre la raíz de A‑D‑E."},
+{t:"Arpegios mayor y menor",g:"Arpegio mayor y menor desde cualquier raíz, en subida y bajada.",bpm:[70,92],
+ tec:[{x:"C mayor (C‑E‑G‑C) y A menor (A‑C‑E‑A).",tab:"A:3 D:2 D:5 G:5 | E:5 E:8 A:7 D:7"}],
+ teo:"Triada mayor = 1‑3‑5. Triada menor = 1‑b3‑5. Por qué el bajo define el acorde.",gr:"Progresión C‑Am‑F‑G con arpegios en negras."},
+{t:"Blues de 12 compases",g:"Tocar el blues entero en A sin perderte en la forma.",bpm:[70,95],
+ tec:[{x:"Boogie raíz‑3‑5‑6 sobre A, D y E.",tab:"A:0 A:4 D:2 D:4 D:2 A:4 | D:0 D:4 G:2 G:4 G:2 D:4 | E:0 E:4 A:2 A:4 A:2 E:4"}],
+ teo:"Forma: I‑I‑I‑I / IV‑IV‑I‑I / V‑IV‑I‑V. Cuenta los compases en voz alta.",gr:"Blues en A con base de shuffle lento."},
+{t:"Shuffle",g:"Swing natural en las corcheas.",bpm:[70,100],
+ tec:[{x:"El boogie de la semana pasada con corcheas swing (larga‑corta). Pon el metrónomo en Swing."}],
+ teo:"Tresillo de corcheas y cómo nace el swing.",gr:"Pride and Joy (Stevie Ray Vaughan), línea simplificada."},
+{t:"Escala menor y relativas",g:"Escala menor natural y saber cuál es la relativa de cada tonalidad mayor.",bpm:[72,96],
+ tec:[{x:"A menor natural desde E:5.",tab:"E:5 E:7 E:8 A:5 A:7 A:8 D:5 D:7"},{x:"Escalas en terceras: 1‑3, 2‑4, 3‑5…"}],
+ teo:"La relativa menor está en el 6º grado: C mayor ↔ A menor.",gr:"Línea en A menor sobre Am‑G‑F‑E."},
+{t:"Repaso fase 2 y grabación",g:"Blues de 12 compases en A, E y G seguidos, grabado.",bpm:[80,100],
+ tec:[{x:"Escala mayor y menor + arpegios por las 12 notas (las que te dé tiempo)."}],
+ teo:"Compara con la grabación de la semana 8.",gr:"Come Together (The Beatles)."},
+/* FASE 3 */
+{t:"Pentatónica menor",g:"Pentatónica menor en 5º traste, de memoria, en cualquier tono.",bpm:[70,100],
+ tec:[{x:"A menor pentatónica.",tab:"E:5 E:8 A:5 A:7 D:5 D:7 G:5 G:7"}],
+ teo:"5 notas: 1‑b3‑4‑5‑b7. La escala más usada en rock, blues y funk.",gr:"Riffs sencillos con la pentatónica sobre un vamp en Am."},
+{t:"Pentatónica mayor y escala de blues",g:"Hacer fills de un compás al final de cada vuelta del blues.",bpm:[70,100],
+ tec:[{x:"Escala de blues en A (añade la b5).",tab:"E:5 E:8 A:5 A:6 A:7 D:5 D:7"},{x:"Pentatónica mayor en A: 1‑2‑3‑5‑6."}],
+ teo:"Cuándo usar mayor o menor sobre un blues.",gr:"Blues en A con un fill en el compás 12."},
+{t:"Semicorcheas",g:"Semicorcheas parejas con alternancia estricta durante 1 minuto.",bpm:[60,84],
+ tec:[{x:"Semicorcheas sobre A, cuenta '1 e y a'.",tab:"A:0 A:0 A:0 A:0 A:0 A:0 A:0 A:0"},{x:"Cromático en semicorcheas."}],
+ teo:"La semicorchea. Pon el metrónomo en Semicorcheas.",gr:"Raíz en semicorcheas sobre un groove de rock."},
+{t:"Rock: octavas y galope",g:"Galope (corchea + 2 semicorcheas) estable a tempo de rock.",bpm:[70,100],
+ tec:[{x:"Galope sobre E y A.",tab:"E:0 E:0 E:0 | E:0 E:0 E:0 | A:0 A:0 A:0 | A:0 A:0 A:0"},{x:"Octavas en corcheas por A‑G‑D."}],
+ teo:"Figuras combinadas: corchea + dos semicorcheas.",gr:"Sunshine of Your Love (Cream)."},
+{t:"Ghost notes con dedos",g:"Notas muertas audibles pero sin altura, entre notas reales.",bpm:[65,90],
+ tec:[{x:"x = nota muerta: apoya la mano izquierda sin pisar.",tab:"E:5 E:x E:x E:5 E:x E:5 D:7 E:x"}],
+ teo:"La nota muerta como percusión. Funk y R&B viven de esto.",gr:"Groove de raíz + ghost notes con base funk lenta."},
+{t:"Síncopa y anticipaciones",g:"Tocar a contratiempo sin acelerar.",bpm:[65,90],
+ tec:[{x:"Anticipa el cambio de acorde en el '4 y' del compás anterior."},{x:"Corcheas solo en las 'y' (contratiempos)."}],
+ teo:"Ligaduras y síncopas en la partitura.",gr:"Línea sincopada sobre Am‑G."},
+{t:"Pocket y dinámica",g:"Tocar 3 minutos con batería sin moverte del tempo.",bpm:[70,95],
+ tec:[{x:"Mismo groove tocando delante, encima y detrás del tiempo."},{x:"Metrónomo en 'Solo 2 y 4'."}],
+ teo:"Qué es el pocket. Escucha cómo toca el bajista con el bombo.",gr:"Groove propio de 4 compases con ritmos de batería del multiefectos o el looper."},
+{t:"Repaso fase 3 y grabación",g:"Grabar un blues con fills y un groove rock completos.",bpm:[80,105],
+ tec:[{x:"Pentatónicas y blues en 3 tonos; semicorcheas a tu mejor BPM."}],
+ teo:"Autoevaluación: pulso, limpieza, ghost notes.",gr:"Smoke on the Water (Deep Purple) y repaso de Come Together."},
+/* FASE 4 */
+{t:"Funk con dedos",g:"Groove de semicorcheas con octavas y ghost notes que 'empuje'.",bpm:[65,90],
+ tec:[{x:"Octavas + ghost notes sobre A.",tab:"E:5 . D:7 E:5 | E:x E:5 D:7 E:x"}],
+ teo:"Menos es más: el espacio en el funk.",gr:"Cissy Strut (The Meters)."},
+{t:"Mixolidio y acorde dominante",g:"Groove sobre un solo acorde E7 durante 2 minutos variando.",bpm:[70,95],
+ tec:[{x:"Mixolidio en E: escala mayor con b7. Arpegio de 7ª: 1‑3‑5‑b7."}],
+ teo:"El acorde dominante 7 y el modo mixolidio.",gr:"Vamp funk en E7."},
+{t:"Slap 1: el pulgar",g:"Golpe de pulgar parejo en E y A, sin que suenen otras cuerdas.",bpm:[60,80],
+ tec:[{x:"T = pulgar. Golpea con el hueso del pulgar, rebota.",tab:"E:0/T E:0/T E:0/T E:0/T | A:0/T A:0/T A:0/T A:0/T"}],
+ teo:"Posición de la mano derecha para el slap. Sube un poco la ganancia o comprime en el multiefectos.",gr:"Negras y corcheas de pulgar sobre E y A."},
+{t:"Slap 2: el pop",g:"Octavas pulgar‑pop limpias en corcheas.",bpm:[60,85],
+ tec:[{x:"P = pop (tirar con índice o medio).",tab:"E:5/T D:7/P E:5/T D:7/P | A:5/T G:7/P A:5/T G:7/P"}],
+ teo:"Volumen equilibrado entre pulgar y pop.",gr:"Octavas de slap por A‑D‑E."},
+{t:"Slap 3: ligados y notas muertas",g:"Combinar T, P, hammer‑on y dead notes.",bpm:[60,85],
+ tec:[{x:"H = hammer‑on. x = nota muerta con el pulgar.",tab:"E:5/T E:7/H E:x/T D:7/P | E:5/T E:x/T D:7/P E:x/T"}],
+ teo:"La mano izquierda también hace ritmo.",gr:"Groove de slap de un compás en bucle."},
+{t:"Slap 4: semicorcheas",g:"Patrón T‑x‑P‑x en semicorcheas a tempo medio.",bpm:[60,90],
+ tec:[{x:"Patrón base de semicorcheas.",tab:"E:5/T E:x/T D:7/P E:x/T E:5/T E:x/T D:7/P D:7/P"},{x:"Opcional: double thumb (pulgar hacia abajo y hacia arriba)."}],
+ teo:"Cómo se escriben el slap y el pop en partitura.",gr:"Groove de slap sobre E7‑A7."},
+{t:"Funk de 16 compases",g:"Alternar dedos y slap dentro de un mismo tema.",bpm:[70,95],
+ tec:[{x:"8 compases con dedos + 8 con slap, sin parar."}],
+ teo:"Forma de tema: intro, A, B. Escucha dónde cambia el bajo.",gr:"Brick House (Commodores) y Higher Ground (Stevie Wonder)."},
+{t:"Repaso fase 4 y grabación",g:"Grabar un funk con dedos y uno con slap.",bpm:[80,100],
+ tec:[{x:"Todos los patrones de slap a tu mejor BPM."}],
+ teo:"Compara con la grabación de la semana 24.",gr:"Chameleon (Herbie Hancock)."},
+/* FASE 5 */
+{t:"Acordes de séptima",g:"Arpegios maj7, 7, m7 y m7b5 desde cualquier raíz.",bpm:[70,95],
+ tec:[{x:"Cmaj7 · C7 · Cm7 · Cm7b5",tab:"A:3 D:2 D:5 G:4 | A:3 D:2 D:5 G:3 | A:3 D:1 D:5 G:3 | A:3 D:1 D:4 G:3"}],
+ teo:"Los cuatro acordes de 7ª y sus fórmulas.",gr:"Arpegios en negras sobre Cmaj7‑Am7‑Dm7‑G7."},
+{t:"Ciclo de quintas y II‑V‑I",g:"Tocar II‑V‑I en C y F con raíz y quinta.",bpm:[70,100],
+ tec:[{x:"II‑V‑I en C: Dm7 – G7 – Cmaj7.",tab:"A:5 D:7 | E:3 A:5 | A:3 D:5"},{x:"Arpegios por el ciclo de cuartas: C‑F‑Bb‑Eb…"}],
+ teo:"El ciclo de quintas y la cadencia II‑V‑I.",gr:"II‑V‑I con arpegios completos."},
+{t:"Lectura rítmica 2",g:"Leer tresillos, puntillos, ligaduras y semicorcheas.",bpm:[60,85],
+ tec:[{x:"Palmea y toca ritmos con negra con puntillo + corchea, y tresillos."}],
+ teo:"Puntillo, ligadura, tresillo. Lee 8 compases cada día.",gr:"Lee una línea de bajo sencilla (Motown) en partitura."},
+{t:"Soul y Motown",g:"Línea melódica con notas de paso cromáticas.",bpm:[70,100],
+ tec:[{x:"Conecta acordes con notas de paso cromáticas, al estilo de James Jamerson."}],
+ teo:"Notas de paso y notas de aproximación.",gr:"My Girl (The Temptations) y Ain't No Mountain High Enough."},
+{t:"Walking bass 1",g:"Walking de negras sobre un blues en F.",bpm:[70,100],
+ tec:[{x:"Nota del acorde en el tiempo 1, aproximación cromática en el 4. F7 → Bb7 → F7.",tab:"E:1 E:5 A:3 A:2 | A:1 D:0 D:3 D:2 | D:3"}],
+ teo:"Blues de jazz en F. La nota del tiempo 1 siempre es del acorde.",gr:"Blues en F caminando 12 compases."},
+{t:"Walking bass 2",g:"Walking sobre II‑V‑I con aproximaciones desde arriba y desde abajo.",bpm:[70,110],
+ tec:[{x:"Escala, arpegio y cromatismo combinados sobre Dm7‑G7‑Cmaj7."}],
+ teo:"Aproximación diatónica, cromática y por quinta.",gr:"Autumn Leaves."},
+{t:"Modos: dórico y jazz‑funk",g:"Groove en Dm7 usando el dórico.",bpm:[70,100],
+ tec:[{x:"D dórico: escala menor con 6ª mayor. Compáralo con D menor natural."}],
+ teo:"Modos griegos: dórico y mixolidio para empezar.",gr:"So What (Miles Davis) y Watermelon Man (Herbie Hancock)."},
+{t:"Inversiones y repaso",g:"Línea por grados conjuntos usando acordes invertidos (C/E, G/B).",bpm:[75,105],
+ tec:[{x:"C – C/B – Am – Am/G – F: bajo descendente."}],
+ teo:"Inversiones y acordes con barra. Graba y compara con la semana 32.",gr:"Repaso de los temas de la fase."},
+/* FASE 6 */
+{t:"Clave y tumbao",g:"Tumbao básico sin tocar en el tiempo 1.",bpm:[70,95],
+ tec:[{x:"Tumbao sobre C: nota en '2 y' y en 4 (ligada hasta el siguiente compás). Cada punto es una corchea.",tab:". . . A:3 . . D:5 . | . . . A:3 . . D:5 ."}],
+ teo:"Clave 3‑2 y 2‑3. Por qué el bajo de salsa anticipa.",gr:"Tumbao sobre un ritmo de clave."},
+{t:"Tumbao en progresiones",g:"Tumbao sobre I‑IV‑V y ii‑V con cambios anticipados.",bpm:[75,105],
+ tec:[{x:"La nota del '4' ya es la raíz del acorde siguiente."}],
+ teo:"Cha‑cha‑chá y salsa: diferencias para el bajo.",gr:"Oye Como Va (Tito Puente / Santana)."},
+{t:"Bossa nova y samba",g:"Patrón raíz‑quinta de bossa relajado.",bpm:[70,110],
+ tec:[{x:"Bossa sobre C: raíz en 1, quinta en '2 y' y 3, raíz en '4 y'.",tab:"A:3 . . D:5 D:5 . . A:3"}],
+ teo:"Negra con puntillo + corchea: la célula de la bossa.",gr:"Mas Que Nada (Jorge Ben)."},
+{t:"Solos sencillos",g:"Improvisar 12 compases de blues con frases de pregunta‑respuesta.",bpm:[70,100],
+ tec:[{x:"Frases de 2 compases con la pentatónica, deja 2 compases de silencio."}],
+ teo:"Motivo, repetición y variación.",gr:"Solo sobre blues en A."},
+{t:"Sacar temas de oído",g:"Transcribir una línea completa sin tablatura.",bpm:[70,100],
+ tec:[{x:"Ralentiza el audio, canta la nota, búscala en la cuerda E o A."}],
+ teo:"Método: raíz, ritmo, notas de adorno.",gr:"Elige un tema de cada estilo de la pestaña Temas."},
+{t:"Técnica a tempo objetivo",g:"Calentamiento completo a 100 BPM en corcheas.",bpm:[90,110],
+ tec:[{x:"Todos los ejercicios del calentamiento diario al BPM objetivo."}],
+ teo:"Detecta tu punto débil y dedícale la semana.",gr:"Repaso de dos temas de fases anteriores."},
+{t:"Preparar el proyecto final",g:"Cuatro temas listos: funk, soul/walking, blues/rock y latino.",bpm:[80,110],
+ tec:[{x:"Ensaya los cuatro temas con base de principio a fin."}],
+ teo:"Plan de grabación: base, toma, escucha, repetir.",gr:"Los cuatro temas elegidos."},
+{t:"Proyecto final",g:"Grabar los cuatro temas y escucharlos junto a la grabación de la semana 8.",bpm:[80,115],
+ tec:[{x:"Grabación final."}],
+ teo:"Siguiente año: armonía III‑IV, chord melody, 5 cuerdas, bajo flamenco.",gr:"Tu repertorio grabado."}
+];
+var WARM=[
+ "Cromático 1‑2‑3‑4 por las 4 cuerdas","Cromático inverso 4‑3‑2‑1","Permutaciones 1‑3‑2‑4 y 1‑4‑2‑3","Saltos de cuerda (E‑D y A‑G)",
+ "Octavas por todo el mástil","Escala mayor en 2 octavas","Arpegios por el ciclo de quintas","Semicorcheas en una nota (resistencia)",
+ "Ghost notes alternadas con nota real","Notas largas con apagado limpio"
+];
+var REP=[
+ {s:"Rock y blues",l:[["Seven Nation Army","The White Stripes",1],["Stand By Me","Ben E. King",1],["Another One Bites the Dust","Queen",1],["Come Together","The Beatles",2],["Pride and Joy","Stevie Ray Vaughan",2],["Sunshine of Your Love","Cream",2],["Smoke on the Water","Deep Purple",1]]},
+ {s:"Funk y slap",l:[["Cissy Strut","The Meters",2],["Brick House","Commodores",2],["Higher Ground","Stevie Wonder",3],["Chameleon","Herbie Hancock",3],["Le Freak","Chic",3],["Pick Up the Pieces","Average White Band",3]]},
+ {s:"Soul y jazz‑funk",l:[["My Girl","The Temptations",1],["Ain't No Mountain High Enough","Marvin Gaye & Tammi Terrell",2],["What's Going On","Marvin Gaye",3],["Watermelon Man","Herbie Hancock",2],["So What","Miles Davis",2],["Autumn Leaves","estándar de jazz",3]]},
+ {s:"Latino",l:[["Oye Como Va","Tito Puente / Santana",1],["Mas Que Nada","Jorge Ben",2],["La Bamba","Ritchie Valens",1],["Guantanamera","tradicional",2],["Pedro Navaja","Rubén Blades",3]]}
+];
+
+/* ---------- Estado ---------- */
+var KEY="curso-bajo-v1", st={done:{},bpm:{}};
+try{var raw=localStorage.getItem(KEY);if(raw)st=Object.assign(st,JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function curIdx(){for(var i=0;i<W.length;i++)if(!st.done[i])return i;return W.length-1}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+/* ---------- Progreso ---------- */
+function renderProgress(){
+  var n=Object.keys(st.done).filter(function(k){return st.done[k]}).length;
+  document.getElementById("pDone").textContent=n;
+  var c=curIdx(), ph=Math.floor(c/8);
+  document.getElementById("pPhase").textContent="Fase "+(ph+1)+" · "+PHASES[ph].n;
+  for(var s=0;s<4;s++){ // cada cuerda = 12 semanas
+    var cnt=0;for(var w=s*12;w<s*12+12;w++)if(st.done[w])cnt++;
+    document.getElementById("s"+(4-s)).style.width=(cnt/12*100)+"%";
+  }
+}
+
+/* ---------- Detalle de semana ---------- */
+function weekDetail(i){
+  var w=W[i];
+  var ex=w.tec.map(function(e){return "<li>"+esc(e.x)+(e.tab?tab(e.tab):"")+"</li>"}).join("");
+  return '<dl class="wgrid">'+
+   '<dt>Objetivo</dt><dd><b>'+esc(w.g)+'</b></dd>'+
+   '<dt>Técnica</dt><dd><ul class="ex">'+ex+'</ul></dd>'+
+   '<dt>Teoría</dt><dd>'+esc(w.teo)+'</dd>'+
+   '<dt>Groove / tema</dt><dd>'+esc(w.gr)+'</dd>'+
+   '<dt>Tempo</dt><dd class="row"><span class="chip bpm">'+w.bpm[0]+' → '+w.bpm[1]+' BPM</span><button class="btn small" data-metro="'+w.bpm[0]+'">Abrir metrónomo a '+w.bpm[0]+'</button></dd>'+
+   '</dl>'+
+   '<div class="row" style="justify-content:space-between">'+
+   '<label class="check" for="done-'+i+'"><input type="checkbox" id="done-'+i+'" data-done="'+i+'"'+(st.done[i]?" checked":"")+'> Objetivo cumplido</label>'+
+   '<label class="row muted" for="bpm-'+i+'" style="font-size:.9rem">BPM alcanzado <input class="num" type="number" min="30" max="250" id="bpm-'+i+'" data-bpm="'+i+'" value="'+(st.bpm[i]||"")+'" placeholder="—"></label>'+
+   '</div>';
+}
+
+/* ---------- Hoy ---------- */
+function renderToday(){
+  var i=curIdx(), ph=Math.floor(i/8);
+  document.getElementById("todayCard").innerHTML=
+   '<div class="row" style="justify-content:space-between"><div><p class="eyebrow">Semana '+(i+1)+' de 48 · Fase '+(ph+1)+'</p><h2>'+esc(W[i].t)+'</h2></div><span class="chip">'+esc(PHASES[ph].n)+'</span></div>'+
+   weekDetail(i);
+  renderSession(i);
+}
+var SB=[{k:"Calentamiento",m:5},{k:"Técnica",m:8},{k:"Lectura y teoría",m:5},{k:"Groove o tema",m:7}];
+function renderSession(i){
+  var d=new Date().getDay(), w1=WARM[(d*2)%10], w2=WARM[(d*2+1)%10], w=W[i];
+  var txt=[w1+" · "+w2,w.tec.map(function(e){return e.x}).join(" "),w.teo,w.gr];
+  document.getElementById("session").innerHTML=SB.map(function(b,k){
+    return '<div class="block" id="blk'+k+'"><div class="min">'+b.m+'′</div><div class="body"><h3>'+b.k+'</h3><p class="muted">'+esc(txt[k])+'</p></div></div>';
+  }).join("");
+}
+
+/* ---------- Plan ---------- */
+function renderPlan(){
+  var c=curIdx(), html="";
+  PHASES.forEach(function(p,pi){
+    var done=0;for(var k=pi*8;k<pi*8+8;k++)if(st.done[k])done++;
+    html+='<div class="phase"><div class="phase-head"><div><p class="eyebrow">Fase '+(pi+1)+' · semanas '+(pi*8+1)+'–'+(pi*8+8)+'</p><h2>'+esc(p.n)+'</h2></div><span class="chip bpm">'+done+'/8</span></div><p class="muted">'+esc(p.d)+'</p><div class="weeks">';
+    for(var i=pi*8;i<pi*8+8;i++){
+      var cls="week"+(st.done[i]?" is-done":"")+(i===c?" is-current":"");
+      html+='<details class="'+cls+'" id="wk'+i+'"'+(i===c?" open":"")+'><summary><span class="wnum">S'+String(i+1).padStart(2,"0")+'</span><span class="wtitle">'+esc(W[i].t)+'</span><span class="wstate">✓</span></summary><div class="wbody">'+weekDetail(i)+'</div></details>';
+    }
+    html+='</div></div>';
+  });
+  document.getElementById("view-plan").innerHTML=html;
+}
+
+function renderAll(){renderProgress();renderToday();renderPlan()}
+
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.dataset.done!==undefined){st.done[t.dataset.done]=t.checked;save();renderAll()}
+  if(t.dataset.bpm!==undefined){var v=parseInt(t.value,10);if(v)st.bpm[t.dataset.bpm]=v;else delete st.bpm[t.dataset.bpm];save();
+    document.querySelectorAll('[data-bpm="'+t.dataset.bpm+'"]').forEach(function(x){if(x!==t)x.value=t.value})}
+});
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-metro]");
+  if(b){setBpm(parseInt(b.dataset.metro,10));show("metro")}
+});
+
+/* ---------- Pestañas ---------- */
+var VIEWS=["hoy","plan","mastil","metro","temas"];
+function show(v){
+  VIEWS.forEach(function(x){
+    document.getElementById("view-"+x).hidden=(x!==v);
+    document.getElementById("tab-"+x).setAttribute("aria-selected",x===v?"true":"false");
+  });
+  try{localStorage.setItem(KEY+"-tab",v)}catch(e){}
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav.tabs button").forEach(function(b){b.addEventListener("click",function(){show(b.dataset.view)})});
+
+/* ---------- Mástil ---------- */
+var NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+var DEG=["1","b2","2","b3","3","4","b5","5","b6","6","b7","7"];
+var SCALES={"Todas las notas":null,"Escala mayor":[0,2,4,5,7,9,11],"Menor natural":[0,2,3,5,7,8,10],"Pentatónica menor":[0,3,5,7,10],"Pentatónica mayor":[0,2,4,7,9],"Escala de blues":[0,3,5,6,7,10],"Mixolidio":[0,2,4,5,7,9,10],"Dórico":[0,2,3,5,7,9,10],"Arpegio mayor":[0,4,7],"Arpegio menor":[0,3,7],"Arpegio 7 (dominante)":[0,4,7,10],"Arpegio m7":[0,3,7,10],"Arpegio maj7":[0,4,7,11]};
+var rootSel=document.getElementById("fbRoot"), scSel=document.getElementById("fbScale"), lbSel=document.getElementById("fbLabel");
+NOTES.forEach(function(n,i){rootSel.add(new Option(n,i))});
+Object.keys(SCALES).forEach(function(k){scSel.add(new Option(k,k))});
+rootSel.value="9"; scSel.value="Pentatónica menor";
+function renderFB(){
+  var root=+rootSel.value, sc=SCALES[scSel.value], lab=lbSel.value, OPEN=[["G",7,"1.5px"],["D",2,"2px"],["A",9,"2.5px"],["E",4,"3.5px"]];
+  var h="";
+  OPEN.forEach(function(s){
+    h+='<div class="lab">'+s[0]+'</div>';
+    for(var f=0;f<=12;f++){
+      var n=(s[1]+f)%12, iv=(n-root+12)%12, inS=!sc||sc.indexOf(iv)>-1;
+      var cls="note"+(sc?(inS?(iv===0?" root":" in"):" off"):(iv===0?" root":""));
+      var txt=lab==="deg"?DEG[iv]:NOTES[n];
+      h+='<div class="cell'+(f===0?" nut":"")+'" style="--sw:'+s[2]+'"><span class="'+cls+'">'+txt+'</span></div>';
+    }
+  });
+  h+='<div></div>';
+  for(var f=0;f<=12;f++)h+='<div class="fn'+([3,5,7,9,12].indexOf(f)>-1?" dot":"")+'">'+f+'</div>';
+  document.getElementById("fb").innerHTML=h;
+}
+[rootSel,scSel,lbSel].forEach(function(s){s.addEventListener("change",renderFB)});
+
+/* ---------- Temas ---------- */
+document.getElementById("rep").innerHTML=REP.map(function(g){
+  return '<div class="card"><h3>'+g.s+'</h3><ol>'+g.l.map(function(x){return '<li><b>'+esc(x[0])+'</b> <span class="muted">· '+esc(x[1])+'</span> <span class="lvl">'+"●".repeat(x[2])+"○".repeat(3-x[2])+'</span></li>'}).join("")+'</ol></div>';
+}).join("");
+
+/* ---------- Audio ---------- */
+var ctx=null;
+function ac(){if(!ctx){var A=window.AudioContext||window.webkitAudioContext;ctx=new A()}if(ctx.state==="suspended")ctx.resume();return ctx}
+function click(time,freq,vol){
+  var o=ctx.createOscillator(),g=ctx.createGain();
+  o.frequency.value=freq;o.connect(g);g.connect(ctx.destination);
+  g.gain.setValueAtTime(vol,time);g.gain.exponentialRampToValueAtTime(0.001,time+0.05);
+  o.start(time);o.stop(time+0.06);
+}
+
+/* ---------- Metrónomo ---------- */
+var bpm=70, sub="1", running=false, nextT=0, step=0, timerId=null, queue=[];
+var bpmEl=document.getElementById("mBpm"), range=document.getElementById("mRange"), dots=document.querySelectorAll("#mBeats span");
+function setBpm(v){bpm=Math.max(40,Math.min(200,v||70));bpmEl.textContent=bpm;range.value=bpm}
+range.addEventListener("input",function(){setBpm(+range.value)});
+document.querySelectorAll("[data-d]").forEach(function(b){b.addEventListener("click",function(){setBpm(bpm+(+b.dataset.d))})});
+document.querySelectorAll("#mSub button").forEach(function(b){b.addEventListener("click",function(){
+  sub=b.dataset.s;document.querySelectorAll("#mSub button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});
+})});
+function stepsPerBeat(){return sub==="sw"?3:+sub}
+function schedule(){
+  var c=ctx, spb=stepsPerBeat(), beatDur=60/bpm;
+  while(nextT<c.currentTime+0.12){
+    var beat=Math.floor(step/spb)%4, s=step%spb, play=true;
+    if(sub==="sw"&&s===1)play=false;
+    var only24=document.getElementById("m24").checked, acc=document.getElementById("mAcc").checked;
+    if(s===0){
+      if(only24&&(beat===0||beat===2))play=false;
+      if(play)click(nextT,(acc&&beat===0&&!only24)?1650:1100,0.6);
+      queue.push({t:nextT,b:beat});
+    }else if(play){click(nextT,750,0.25)}
+    nextT+=beatDur/spb; step++;
+  }
+}
+function draw(){
+  if(!running)return;
+  var now=ctx.currentTime;
+  while(queue.length&&queue[0].t<=now){
+    var q=queue.shift();
+    dots.forEach(function(d,i){d.className=(i===q.b?"on":"")+(i===0?" acc":"")});
+  }
+  requestAnimationFrame(draw);
+}
+document.getElementById("mToggle").addEventListener("click",function(){
+  if(running){running=false;clearInterval(timerId);this.textContent="Iniciar";dots.forEach(function(d){d.className=""});return}
+  ac();running=true;step=0;queue=[];nextT=ctx.currentTime+0.06;
+  timerId=setInterval(schedule,25);schedule();requestAnimationFrame(draw);this.textContent="Parar";
+});
+var taps=[];
+document.getElementById("mTap").addEventListener("click",function(){
+  var t=performance.now();taps=taps.filter(function(x){return t-x<2500});taps.push(t);
+  if(taps.length>1){var d=(taps[taps.length-1]-taps[0])/(taps.length-1);setBpm(Math.round(60000/d))}
+});
+
+/* ---------- Temporizador de sesión ---------- */
+var sTotal=25*60, sLeft=sTotal, sRun=false, sInt=null, lastBlock=-1;
+var tEl=document.getElementById("sTimer"), sBtn=document.getElementById("sStart");
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function blockAt(elapsed){var acc=0;for(var k=0;k<SB.length;k++){acc+=SB[k].m*60;if(elapsed<acc)return k}return SB.length}
+function paintBlocks(){
+  var b=blockAt(sTotal-sLeft);
+  for(var k=0;k<SB.length;k++){var el=document.getElementById("blk"+k);if(!el)continue;
+    el.classList.toggle("active",sRun&&k===b||(!sRun&&sLeft<sTotal&&k===b));el.classList.toggle("done",k<b)}
+  if(b!==lastBlock&&lastBlock!==-1&&ctx){var t=ctx.currentTime;click(t,880,0.5);click(t+0.18,1320,0.5)}
+  lastBlock=b;
+}
+function tick(){
+  sLeft--;tEl.textContent=fmt(Math.max(0,sLeft));paintBlocks();
+  if(sLeft<=0){clearInterval(sInt);sRun=false;sBtn.textContent="Hecho";}
+}
+sBtn.addEventListener("click",function(){
+  if(sLeft<=0)return;
+  if(sRun){sRun=false;clearInterval(sInt);sBtn.textContent="Seguir";return}
+  ac();sRun=true;lastBlock=blockAt(sTotal-sLeft);sInt=setInterval(tick,1000);sBtn.textContent="Pausa";paintBlocks();
+});
+document.getElementById("sReset").addEventListener("click",function(){
+  clearInterval(sInt);sRun=false;sLeft=sTotal;lastBlock=-1;tEl.textContent=fmt(sLeft);sBtn.textContent="Empezar";paintBlocks();
+});
+
+/* ---------- Arranque ---------- */
+renderAll();renderFB();setBpm(W[curIdx()].bpm[0]);
+var startTab="hoy";
+var h=(location.hash||"").slice(1);
+if(VIEWS.indexOf(h)>-1)startTab=h;else{try{var t=localStorage.getItem(KEY+"-tab");if(VIEWS.indexOf(t)>-1)startTab=t}catch(e){}}
+show(startTab);
+})();
+</script>
+</body>
+</html>
